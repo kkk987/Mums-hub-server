@@ -16,7 +16,7 @@ app.use(cors({
 }));
 app.use(bodyParser.json());
 
-const dbConn = 'mongodb://localhost/muns_hub'
+const dbConn = process.env.MONGODB_URI || 'mongodb+srv://dbadmin:dbadmin@mumshub-afzqt.mongodb.net/test?retryWrites=true&w=majority'
 // Set three properties to avoid deprecation warnings:
 // useNewUrlParser: true
 // useUnifiedTopology: true
