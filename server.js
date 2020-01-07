@@ -15,8 +15,8 @@ app.use(cors({
     }
 }));
 app.use(bodyParser.json());
-
-const dbConn = process.env.MONGODB_URI || 'https://sheltered-garden-84149.herokuapp.com/'
+const atlasMongo = 'mongodb+srv://dbadmin:dbadmin@mumshub-afzqt.mongodb.net/test?retryWrites=true&w=majority'
+const dbConn = process.env.MONGODB_URI || atlasMongo
 // Set three properties to avoid deprecation warnings:
 // useNewUrlParser: true
 // useUnifiedTopology: true
