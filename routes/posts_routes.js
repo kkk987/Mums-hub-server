@@ -5,7 +5,8 @@ const {
   getPost,
   makePost,
   removePost,
-  changePost
+  changePost,
+  userAuthenticated
 } = require('../controllers/posts_controller');
 
 // READ
@@ -18,6 +19,8 @@ router.get('/', getPosts);
 // Returns post with given id
 router.get('/:id', getPost);
 
+// For post, delete, put -require authenticated user
+router.use(userAuthenticated);
 // CREATE
 // POST on '/posts'
 // Creates a new post
