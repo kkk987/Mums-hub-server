@@ -13,14 +13,8 @@ const User = new Schema({
 		type: String,
 		required: true
     },
-    password: {
-        type: String,
-        required: true,
-        minlength: 6,
-        maxlength: 18
-    },
     duedate: {
-        type: String,
+        type: Date,
         required: true
     }
 })

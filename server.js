@@ -1,17 +1,21 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const passport = require('passport')
 const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo')(session);
 const postRouter = require('./routes/posts_routes');
 const authRouter = require("./routes/auth_routes");
 
 const port = process.env.PORT || 3001;
 
 require("./config/passport");
-app.use(passport.initialize());
-app.use(passport.session());
 
 const app = express();
+
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(cors({
     credentials: true,
     origin: function(origin,callback) {

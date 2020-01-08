@@ -1,7 +1,16 @@
 const passport = require("passport");
 const User = require("../models/user");
 
+const validatePassword = function (password) {
+    if (!password || (password.length < 6)) {
+        res.status(500);
+    }else {
+        console.log(`Password validated`);
+    }
+    
+}
 const register = function (req, res) {
+    validatePassword(req.body.password);
     User.register(new User({
         username: req.body.username,
         email: req.body.email,
