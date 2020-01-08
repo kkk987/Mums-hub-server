@@ -18,7 +18,8 @@ const User = new Schema({
         required: true
     },
     role: {
-        $in: ["user", "admin"]
+        type: String,
+        required: true
     }
 })
 

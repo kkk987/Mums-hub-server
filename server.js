@@ -14,6 +14,27 @@ require("./config/passport");
 
 const app = express();
 
+// app.use(passport.initialize());
+// app.use(passport.session());
+// app.use(cors({
+//     credentials: true,
+//     origin: function(origin,callback) {
+//         console.log("origin:", origin)
+//         callback(null,true)
+//     }
+// }));
+app.use(bodyParser.json());
+app.use(session({
+    secret: "express",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1800000
+    },
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection
+    })
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors({
@@ -23,7 +44,6 @@ app.use(cors({
         callback(null,true)
     }
 }));
-app.use(bodyParser.json());
 const atlasMongo = 'mongodb+srv://dbadmin:dbadmin@mumshub-afzqt.mongodb.net/test?retryWrites=true&w=majority'
 const dbConn = process.env.MONGODB_URI || atlasMongo
 // Set three properties to avoid deprecation warnings:

@@ -10,7 +10,8 @@ const register = function (req, res) {
     User.register(new User({
         username: req.body.username,
         email: req.body.email,
-        duedate: req.body.duedate
+        duedate: req.body.duedate,
+        role: req.body.role
     }), req.body.password, function (err) {
         if (err) {
             res.status(500);
@@ -55,9 +56,10 @@ const validatePassword = function (password) {
 }
 
 const validateUserRole = function (role) {
-    if (!role || (role != "admin")) {
+    if (!role) {
         return "user"
     }
+    return role
 }
 
 module.exports = { 
