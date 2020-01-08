@@ -16,6 +16,9 @@ const User = new Schema({
     duedate: {
         type: Date,
         required: true
+    },
+    role: {
+        $in: ["user", "admin"]
     }
 })
 

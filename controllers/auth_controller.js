@@ -6,6 +6,7 @@ const authenticate = passport.authenticate("local");
 
 const register = function (req, res) {
     validatePassword(req.body.password);
+    req.body.role = validateUserRole(req.body.role);
     User.register(new User({
         username: req.body.username,
         email: req.body.email,
@@ -37,13 +38,6 @@ function loginUser(req, res) {
     });
 }
 
-// Local helper functions
-const validatePassword = function (password) {
-    if (!password || (password.length < 6)) {
-        res.status(500);
-    }
-}
-
 const logout = function(req, res) {
 	req.logout();
 	console.log("logged out user");
@@ -52,6 +46,19 @@ const logout = function(req, res) {
 	res.sendStatus(200);
 }
 
+
+// Local helper functions
+const validatePassword = function (password) {
+    if (!password || (password.length < 6)) {
+        res.status(500);
+    }
+}
+
+const validateUserRole = function (role) {
+    if (!role || (role != "admin")) {
+        return "user"
+    }
+}
 
 module.exports = { 
                     register,
