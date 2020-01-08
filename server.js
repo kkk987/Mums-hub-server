@@ -6,6 +6,10 @@ const postRouter = require('./routes/posts_routes');
 
 const port = process.env.PORT || 3001;
 
+require("./config/passport");
+app.use(passport.initialize());
+app.use(passport.session());
+
 const app = express();
 app.use(cors({
     credentials: true,
@@ -38,6 +42,7 @@ app.get('/', (req, res) => {
     console.log("get on /");
     res.send("got your request");
 })
+
 
 app.use('/posts', postRouter);
 
