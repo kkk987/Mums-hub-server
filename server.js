@@ -1,12 +1,42 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const passport = require('passport')
 const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo')(session);
 const postRouter = require('./routes/posts_routes');
+const authRouter = require("./routes/auth_routes");
 
 const port = process.env.PORT || 3001;
 
+require("./config/passport");
+
 const app = express();
+
+// app.use(passport.initialize());
+// app.use(passport.session());
+// app.use(cors({
+//     credentials: true,
+//     origin: function(origin,callback) {
+//         console.log("origin:", origin)
+//         callback(null,true)
+//     }
+// }));
+app.use(bodyParser.json());
+app.use(session({
+    secret: "express",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1800000
+    },
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection
+    })
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(cors({
     credentials: true,
     origin: function(origin,callback) {
@@ -14,7 +44,6 @@ app.use(cors({
         callback(null,true)
     }
 }));
-app.use(bodyParser.json());
 const atlasMongo = 'mongodb+srv://dbadmin:dbadmin@mumshub-afzqt.mongodb.net/test?retryWrites=true&w=majority'
 const dbConn = process.env.MONGODB_URI || atlasMongo
 // Set three properties to avoid deprecation warnings:
@@ -34,12 +63,15 @@ mongoose.connect(dbConn, {
         }
     });
 
+// Routes
 app.get('/', (req, res) => {
     console.log("get on /");
     res.send("got your request");
 })
 
 app.use('/posts', postRouter);
+app.use("/auth", authRouter);
+
 
 app.listen(port, () => {
     console.log(`Blog express app listening on port ${port}`);

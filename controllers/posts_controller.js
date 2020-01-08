@@ -35,6 +35,8 @@ const getPost = function (req, res) {
 };
 
 const makePost = function (req, res) {
+    // add the username from req.user
+    req.body.username = req.user.username;
     // save the Post instance from addPost
     addPost(req).save((err, post) => {
         if (err) {
@@ -76,10 +78,31 @@ const changePost = function (req, res) {
     });
 };
 
+const userAuthenticated = function (req, res, next) {
+    console.log(`req body: ${req.user}`);
+    if (req.isAuthenticated()) {
+        next();
+    } else {
+        res.sendStatus(403);
+    }
+}
+
+const verifyAdmin = function (req, res, next) {
+    // If post owner isn't currently logged in user, send forbidden
+
+    if (req.user.role === 'admin') {
+        next();
+    } else {
+        res.sendStatus(403);
+    }
+}
+
 module.exports = {
     getPosts,
     getPost,
     makePost,
     removePost,
-    changePost
+    changePost,
+    userAuthenticated,
+    verifyAdmin
 };
