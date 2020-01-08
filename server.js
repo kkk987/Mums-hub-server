@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const postRouter = require('./routes/posts_routes');
+const authRouter = require("./routes/auth_routes");
 
 const port = process.env.PORT || 3001;
 
@@ -38,13 +39,15 @@ mongoose.connect(dbConn, {
         }
     });
 
+// Routes
 app.get('/', (req, res) => {
     console.log("get on /");
     res.send("got your request");
 })
 
-
 app.use('/posts', postRouter);
+app.use("/auth", authRouter);
+
 
 app.listen(port, () => {
     console.log(`Blog express app listening on port ${port}`);
