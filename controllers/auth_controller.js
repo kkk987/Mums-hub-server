@@ -10,9 +10,10 @@ const register = function (req, res) {
     User.register(new User({
         username: req.body.username,
         email: req.body.email,
-        duedate: req.body.duedate,
+        dueDate: req.body.dueDate,
         role: req.body.role
     }), req.body.password, function (err) {
+        console.log(`err: ${err}`)
         if (err) {
             res.status(500);
             res.json({

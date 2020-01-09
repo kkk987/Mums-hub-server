@@ -37,24 +37,39 @@ const updatePost = function (req) {
   );
 };
 
-// These exported functions allow flexibility for testing
-const setDataFile = function (fileName) {
-  dataFile = fileName;
-  loadData();
-};
+// Add a comment to a post
+// returns a promise (because it is async)
+const addComment = async function (req) {
+  let post = await Post.findById(req.params.postId);
 
-const getDataFileRelativeToApp = function (file) {
-  // Remove the ../ from the dataFile path for writing
-  // because the writeFile looks for path relative to the app, not utilities.js
-  return file.substring(file.lastIndexOf('../') + 3, file.length);
-};
-
-// Local helper functions
-
-// Loads data from dataFile
-function loadData() {
-  blogPosts = require(dataFile);
+  let newComment = {
+      username: req.body.username,
+      comment: req.body.comment
+  };
+  post.comments.push(newComment);
+  return Post.findByIdAndUpdate(req.params.postId, post, {
+      new: true
+  });
 }
+
+// // These exported functions allow flexibility for testing
+// const setDataFile = function (fileName) {
+//   dataFile = fileName;
+//   loadData();
+// };
+
+// const getDataFileRelativeToApp = function (file) {
+//   // Remove the ../ from the dataFile path for writing
+//   // because the writeFile looks for path relative to the app, not utilities.js
+//   return file.substring(file.lastIndexOf('../') + 3, file.length);
+// };
+
+// // Local helper functions
+
+// // Loads data from dataFile
+// function loadData() {
+//   blogPosts = require(dataFile);
+// }
 
 
 module.exports = {
@@ -63,6 +78,5 @@ module.exports = {
   addPost,
   deletePost,
   updatePost,
-  setDataFile,
-  getDataFileRelativeToApp
+  addComment
 }

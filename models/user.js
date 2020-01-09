@@ -13,7 +13,7 @@ const User = new Schema({
 		type: String,
 		required: true
     },
-    duedate: {
+    dueDate: {
         type: Date,
         required: true
     },

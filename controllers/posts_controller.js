@@ -3,7 +3,8 @@ const {
     getPostById,
     addPost,
     deletePost,
-    updatePost
+    updatePost,
+    addComment
 } = require('../utils/utilities');
 
 const getPosts = function (req, res) {
@@ -78,6 +79,28 @@ const changePost = function (req, res) {
     });
 };
 
+// make a comment on a post
+const makeComment = function (req, res) {
+    // Check for error from middleware
+    if (req.error) {
+        res.status(req.error.status);
+        res.send(req.error.message);
+    } else {
+        // resolve the promise from addComment
+        // Add username to the request from the session
+        req.body.username = req.user.username;
+        addComment(req).then((post) => {
+            res.status(200);
+            res.send(post);
+        }).catch((err) => {
+            res.status(500);
+            res.json({
+                error: err.message
+            });
+        });
+    }
+}
+
 const userAuthenticated = function (req, res, next) {
     console.log(`req body: ${req.user}`);
     if (req.isAuthenticated()) {
@@ -103,6 +126,7 @@ module.exports = {
     makePost,
     removePost,
     changePost,
+    makeComment,
     userAuthenticated,
     verifyAdmin
 };

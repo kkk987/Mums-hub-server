@@ -23,7 +23,11 @@ const Post = new Schema({
         type: String,
         required: true
     },
-    category: String
+    category: String,
+    comments: {
+        username: String,
+        content: String
+    }
 });
 
 module.exports = mongoose.model('Post', Post);
