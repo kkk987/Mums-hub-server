@@ -6,9 +6,12 @@ const {
   makePost,
   removePost,
   changePost,
+  getComments,
   makeComment,
+  removeComment,
   userAuthenticated,
-  verifyAdmin
+  verifyAdmin,
+  verifyOwner
 } = require('../controllers/posts_controller');
 
 // READ
@@ -28,6 +31,12 @@ router.use(userAuthenticated);
 // Creates a new post
 router.post('/', verifyAdmin, makePost);
 
+// READ
+// GET on '/posts/comments/:postId'
+// Returns all of the comments for a post
+// For now, requiring valid authenticated login to do this
+router.get("/comments/:postId", getComments)
+
 // CREATE
 // POST on '/posts/comments/:postId'
 // Adds a comment to a post with postId
@@ -37,6 +46,11 @@ router.post('/comments/:postId', makeComment);
 // DELETE on '/posts/:id'
 // Deletes a post with id
 router.delete('/:id', verifyAdmin, removePost);
+
+// DELETE
+// DELETE on '/posts/:id'
+// Deletes a post with id
+router.delete("/comments/:id", verifyOwner, removeComment)
 
 // UPDATE
 // PUT on 'posts/:id'

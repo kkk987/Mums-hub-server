@@ -37,6 +37,14 @@ const updatePost = function (req) {
   );
 };
 
+// Get all comments for a post
+// returns a promise (because it is async)
+const getAllComments = async function (req) {
+  let post = await Post.findById(req.params.postId);
+
+  return post.getAllComments();
+};
+
 // Add a comment to a post
 // returns a promise (because it is async)
 const addComment = async function (req) {
@@ -51,6 +59,22 @@ const addComment = async function (req) {
       new: true
   });
 }
+
+// Deletes a comment from a post
+// returns a promise (because it is async)
+const deleteComment = async function (req) {
+  return await Post.findOneAndUpdate({
+      "comments._id": req.params.id
+  }, {
+      $pull: {
+          comments: {
+              _id: req.params.id
+          }
+      }
+  }, {
+      new: true
+  });
+};
 
 // // These exported functions allow flexibility for testing
 // const setDataFile = function (fileName) {
@@ -78,5 +102,7 @@ module.exports = {
   addPost,
   deletePost,
   updatePost,
-  addComment
+  getAllComments,
+  addComment,
+  deleteComment
 }
