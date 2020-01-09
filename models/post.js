@@ -24,10 +24,10 @@ const Post = new Schema({
         required: true
     },
     category: String,
-    comments: {
+    comments: [{
         username: String,
-        content: String
-    }
+        comment: String
+    }]
 });
 
 module.exports = mongoose.model('Post', Post);
