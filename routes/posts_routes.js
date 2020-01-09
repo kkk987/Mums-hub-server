@@ -6,6 +6,7 @@ const {
   makePost,
   removePost,
   changePost,
+  makeComment,
   userAuthenticated,
   verifyAdmin
 } = require('../controllers/posts_controller');
@@ -26,6 +27,11 @@ router.use(userAuthenticated);
 // POST on '/posts'
 // Creates a new post
 router.post('/', verifyAdmin, makePost);
+
+// CREATE
+// POST on '/posts/comments/:postId'
+// Adds a comment to a post with postId
+router.post('/comments/:postId', makeComment);
 
 // DELETE
 // DELETE on '/posts/:id'

@@ -14,15 +14,6 @@ require("./config/passport");
 
 const app = express();
 
-// app.use(passport.initialize());
-// app.use(passport.session());
-// app.use(cors({
-//     credentials: true,
-//     origin: function(origin,callback) {
-//         console.log("origin:", origin)
-//         callback(null,true)
-//     }
-// }));
 app.use(bodyParser.json());
 app.use(session({
     secret: "express",
