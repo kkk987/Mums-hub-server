@@ -3,7 +3,11 @@ const {
     getPostById,
     addPost,
     deletePost,
-    updatePost
+    updatePost,
+    getAllComments,
+    addComment,
+    updateComment,
+    deleteComment
 } = require('../utils/utilities');
 
 const getPosts = function (req, res) {
@@ -78,8 +82,92 @@ const changePost = function (req, res) {
     });
 };
 
+// get all comments on a post
+const getComments = function (req, res) {
+    // Check for error from middleware
+    if (req.error) {
+        res.status(req.error.status);
+        res.send(req.error.message);
+    } else {
+        // resolve the promise from getAllComments
+        getAllComments(req).then((comments) => {
+            res.status(200);
+            res.send(comments);
+        }).catch((err) => {
+            res.status(500);
+            res.json({
+                error: err.message
+            });
+        });
+    }
+};
+
+
+// make a comment on a post
+const makeComment = function (req, res) {
+    // Check for error from middleware
+    if (req.error) {
+        res.status(req.error.status);
+        res.send(req.error.message);
+    } else {
+        // resolve the promise from addComment
+        // Add username to the request from the session
+        req.body.username = req.user.username;
+        addComment(req).then((post) => {
+            res.status(200);
+            res.send(post);
+        }).catch((err) => {
+            res.status(500);
+            res.json({
+                error: err.message
+            });
+        });
+    }
+}
+
+// change a comment on a post
+const changeComment = function (req, res) {
+    // Check for error from middleware
+    if (req.error) {
+        res.status(req.error.status);
+        res.send(req.error.message);
+    } else {
+        updateComment(req).then((comment) => {
+            res.status(200);
+            res.send(comment)
+        }).catch((err) => {
+            res.status(500);
+            res.json({
+                error: err.message
+            })
+        })
+    }
+}
+
+
+// delete a comment on a post
+const removeComment = function (req, res) {
+    // Check for error from middleware
+    if (req.error) {
+        res.status(req.error.status);
+        res.send(req.error.message);
+    } else {
+        deleteComment(req).then(() => {
+            res.sendStatus(204);
+        }).catch((err) => {
+
+            res.status(500);
+            res.json({
+                error: err.message
+            });
+
+
+        })
+    }
+}
+
 const userAuthenticated = function (req, res, next) {
-    console.log(`req body: ${req.user}`);
+    console.log(`user authenticated req body: ${req.user}`);
     if (req.isAuthenticated()) {
         next();
     } else {
@@ -97,12 +185,45 @@ const verifyAdmin = function (req, res, next) {
     }
 }
 
+const verifyOwner = function (req, res, next) {
+    if (req.user.role === 'admin') {
+        console.log('have admin user in middleware')
+        next();
+    } else {
+        let post = Post.findOne({
+            "comments._id": req.params.id
+        }).exec((err, post) => {
+            if (err) {
+                req.error = {
+                    message: 'Post not found',
+                    status: 404
+                }
+                next();
+            }
+            console.log("post:", post)
+            let comment = post.comments.id(req.params.id);
+            if (req.user.username !== comment.username) {
+                req.error = {
+                    message: 'You do not have permission to modify this comment',
+                    status: 403
+                };
+            }
+            next();
+        });
+    }
+}
+
 module.exports = {
     getPosts,
     getPost,
     makePost,
     removePost,
     changePost,
+    getComments,
+    makeComment,
+    changeComment,
+    removeComment,
     userAuthenticated,
-    verifyAdmin
+    verifyAdmin,
+    verifyOwner
 };

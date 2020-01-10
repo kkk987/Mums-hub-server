@@ -8,21 +8,12 @@ const MongoStore = require('connect-mongo')(session);
 const postRouter = require('./routes/posts_routes');
 const authRouter = require("./routes/auth_routes");
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3009;
 
 require("./config/passport");
 
 const app = express();
 
-// app.use(passport.initialize());
-// app.use(passport.session());
-// app.use(cors({
-//     credentials: true,
-//     origin: function(origin,callback) {
-//         console.log("origin:", origin)
-//         callback(null,true)
-//     }
-// }));
 app.use(bodyParser.json());
 app.use(session({
     secret: "express",

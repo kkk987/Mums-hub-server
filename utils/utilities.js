@@ -37,24 +37,82 @@ const updatePost = function (req) {
   );
 };
 
-// These exported functions allow flexibility for testing
-const setDataFile = function (fileName) {
-  dataFile = fileName;
-  loadData();
+// Get all comments for a post
+// returns a promise (because it is async)
+const getAllComments = async function (req) {
+  let post = await Post.findById(req.params.postId);
+
+  return post.getAllComments();
 };
 
-const getDataFileRelativeToApp = function (file) {
-  // Remove the ../ from the dataFile path for writing
-  // because the writeFile looks for path relative to the app, not utilities.js
-  return file.substring(file.lastIndexOf('../') + 3, file.length);
-};
-
-// Local helper functions
-
-// Loads data from dataFile
-function loadData() {
-  blogPosts = require(dataFile);
+// Add a comment to a post
+// returns a promise (because it is async)
+const addComment = async function (req) {
+  let post = await Post.findById(req.params.postId);
+  let date = Date.now()
+  let newComment = {
+      username: req.body.username,
+      comment: req.body.comment,
+      create_date: date,
+      modified_date: date
+  };
+  post.comments.push(newComment);
+  return Post.findByIdAndUpdate(req.params.postId, post, {
+      new: true
+  });
 }
+
+// update comment
+const updateComment = async function (req) {
+  let date = Date.now();
+  console.log(`updated comment: ${req.body._id}`)
+  return await Post.findOneAndUpdate({
+      "_id": req.params.postId,
+      "comments._id": req.body._id
+  }, {
+      $set: {
+          'comments.$.comment': req.body.comment,
+          'comments.$.modified_date': date          
+      }
+  }, {
+      new: true
+  });
+};
+
+// Deletes a comment from a post
+// returns a promise (because it is async)
+const deleteComment = async function (req) {
+  return await Post.findOneAndUpdate({
+      "comments._id": req.params.id
+  }, {
+      $pull: {
+          comments: {
+              _id: req.params.id
+          }
+      }
+  }, {
+      new: true
+  });
+};
+
+// // These exported functions allow flexibility for testing
+// const setDataFile = function (fileName) {
+//   dataFile = fileName;
+//   loadData();
+// };
+
+// const getDataFileRelativeToApp = function (file) {
+//   // Remove the ../ from the dataFile path for writing
+//   // because the writeFile looks for path relative to the app, not utilities.js
+//   return file.substring(file.lastIndexOf('../') + 3, file.length);
+// };
+
+// // Local helper functions
+
+// // Loads data from dataFile
+// function loadData() {
+//   blogPosts = require(dataFile);
+// }
 
 
 module.exports = {
@@ -63,6 +121,8 @@ module.exports = {
   addPost,
   deletePost,
   updatePost,
-  setDataFile,
-  getDataFileRelativeToApp
+  getAllComments,
+  addComment,
+  updateComment,
+  deleteComment
 }
