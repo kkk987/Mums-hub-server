@@ -63,8 +63,17 @@ const validateUserRole = function (role) {
     return role
 }
 
+const checkAuthenticated = function (req, res) {
+    if (req.isAuthenticated()) {
+        res.sendStatus(200)
+    }else {
+        res.sendStatus(403)
+    }
+} 
+
 module.exports = { 
                     register,
                     login: loginUser,
-                    logout
+                    logout,
+                    checkAuthenticated
                  };
