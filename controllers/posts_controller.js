@@ -6,6 +6,7 @@ const {
     updatePost,
     getAllComments,
     addComment,
+    updateComment,
     deleteComment
 } = require('../utils/utilities');
 
@@ -124,6 +125,26 @@ const makeComment = function (req, res) {
     }
 }
 
+// change a comment on a post
+const changeComment = function (req, res) {
+    // Check for error from middleware
+    if (req.error) {
+        res.status(req.error.status);
+        res.send(req.error.message);
+    } else {
+        updateComment(req).then((comment) => {
+            res.status(200);
+            res.send(comment)
+        }).catch((err) => {
+            res.status(500);
+            res.json({
+                error: err.message
+            })
+        })
+    }
+}
+
+
 // delete a comment on a post
 const removeComment = function (req, res) {
     // Check for error from middleware
@@ -146,7 +167,7 @@ const removeComment = function (req, res) {
 }
 
 const userAuthenticated = function (req, res, next) {
-    console.log(`req body: ${req.user}`);
+    console.log(`user authenticated req body: ${req.user}`);
     if (req.isAuthenticated()) {
         next();
     } else {
@@ -200,6 +221,7 @@ module.exports = {
     changePost,
     getComments,
     makeComment,
+    changeComment,
     removeComment,
     userAuthenticated,
     verifyAdmin,

@@ -8,7 +8,7 @@ const MongoStore = require('connect-mongo')(session);
 const postRouter = require('./routes/posts_routes');
 const authRouter = require("./routes/auth_routes");
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3009;
 
 require("./config/passport");
 

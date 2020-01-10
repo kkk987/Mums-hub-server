@@ -8,6 +8,7 @@ const {
   changePost,
   getComments,
   makeComment,
+  changeComment,
   removeComment,
   userAuthenticated,
   verifyAdmin,
@@ -41,6 +42,11 @@ router.get("/comments/:postId", getComments)
 // POST on '/posts/comments/:postId'
 // Adds a comment to a post with postId
 router.post('/comments/:postId', makeComment);
+
+// PUT
+// PUT on '/posts/comments/:id'
+// Updates a comment with id
+router.put('/comments/:postId', verifyOwner, changeComment);
 
 // DELETE
 // DELETE on '/posts/:id'

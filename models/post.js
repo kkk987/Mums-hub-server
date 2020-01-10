@@ -26,8 +26,14 @@ const Post = new Schema({
     category: String,
     comments: [{
         username: String,
-        comment: String
+        comment: String,
+        create_date: Date,
+        modified_date: Date
     }]
 });
+
+Post.methods.getAllComments = function () {
+    return this.comments;
+};
 
 module.exports = mongoose.model('Post', Post);

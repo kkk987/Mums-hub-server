@@ -49,16 +49,35 @@ const getAllComments = async function (req) {
 // returns a promise (because it is async)
 const addComment = async function (req) {
   let post = await Post.findById(req.params.postId);
-
+  let date = Date.now()
   let newComment = {
       username: req.body.username,
-      comment: req.body.comment
+      comment: req.body.comment,
+      create_date: date,
+      modified_date: date
   };
   post.comments.push(newComment);
   return Post.findByIdAndUpdate(req.params.postId, post, {
       new: true
   });
 }
+
+// update comment
+const updateComment = async function (req) {
+  let date = Date.now();
+  console.log(`updated comment: ${req.body._id}`)
+  return await Post.findOneAndUpdate({
+      "_id": req.params.postId,
+      "comments._id": req.body._id
+  }, {
+      $set: {
+          'comments.$.comment': req.body.comment,
+          'comments.$.modified_date': date          
+      }
+  }, {
+      new: true
+  });
+};
 
 // Deletes a comment from a post
 // returns a promise (because it is async)
@@ -104,5 +123,6 @@ module.exports = {
   updatePost,
   getAllComments,
   addComment,
+  updateComment,
   deleteComment
 }
